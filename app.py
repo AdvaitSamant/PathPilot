@@ -14,36 +14,31 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+import streamlit as st
+import torch
+import requests
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import io
+
 # ==============================
 # Model Loading
 # ==============================
 @st.cache_resource(show_spinner=True)
 def load_model():
-    model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0")
+    model = AutoModelForCausalLM.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0")
+    return tokenizer, model
 
-    try:
-        if torch.cuda.is_available():
-            model = AutoModelForCausalLM.from_pretrained(
-                model_name,
-                torch_dtype=torch.float16,
-                attn_implementation="flash_attention_2",
-                device_map="auto"
-            )
-        else:
-            model = AutoModelForCausalLM.from_pretrained(
-                model_name,
-                torch_dtype=torch.float32,
-                device_map=None
-            ).to("cpu")
-        model.eval()
-        return tokenizer, model
-    except Exception as e:
-        st.warning(f"TinyLlama model could not be loaded: {e}")
-        return None, None
+try:
+    tokenizer, model = load_model()
+    TINYLLAMA_AVAILABLE = True
+except Exception as e:
+    st.warning(f"TinyLlama model could not be loaded: {e}")
+    TINYLLAMA_AVAILABLE = False
+    tokenizer, model = None, None
 
-tokenizer, model = load_model()
-TINYLLAMA_AVAILABLE = model is not None
 
 # Career Recommendation Engine
 class CareerRecommendationEngine:
@@ -735,123 +730,362 @@ with st.sidebar:
 main_tab = st.radio("", ["Career Assessment", "AI Career Guide"], horizontal=True, label_visibility="collapsed")
 
 if main_tab == "Career Assessment":
-    # Tabs
-    tab1, tab2, tab3 = st.tabs(["Academic Profile", "Skills & Experience", "Career Preferences"])
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Career Assessment Quiz</div>", unsafe_allow_html=True)
+    st.markdown("Complete this 30-question assessment. Your responses will help us understand your profile better.")
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    with tab1:
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.markdown("<div class='section-header'>Academic Background</div>", unsafe_allow_html=True)
-        st.markdown("Tell us about your academic performance")
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            tenth = st.slider("10th Grade Percentage", 0, 100, 70, help="Your 10th standard percentage")
-        with col2:
-            twelfth = st.slider("12th Grade Percentage", 0, 100, 70, help="Your 12th standard percentage")
-        with col3:
-            ug = st.slider("Undergraduate Percentage", 0, 100, 70, help="Your current/expected UG percentage")
-        
-        if tenth > 0 or twelfth > 0 or ug > 0:
-            st.session_state.profile_filled = True
-        st.markdown("</div>", unsafe_allow_html=True)
+    # Initialize quiz state
+    if 'quiz_started' not in st.session_state:
+        st.session_state.quiz_started = False
+        st.session_state.quiz_responses = {}
+        st.session_state.current_question = 0
 
-    with tab2:
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.markdown("<div class='section-header'>Technical Skills</div>", unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
-        with col1:
-            logical = st.slider("Logical Reasoning", 0, 10, 5, help="Rate your logical thinking ability")
-            coding = st.slider("Coding Skills", 0, 10, 5, help="Rate your programming proficiency")
-        with col2:
-            hackathons = st.selectbox("Participated in Hackathons?", ["No", "Yes"])
-            hours_per_day = st.slider("Study/Work Hours per Day", 0, 12, 8)
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.markdown("<div class='section-header'>Soft Skills</div>", unsafe_allow_html=True)
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            public_speaking = st.slider("Public Speaking", 0, 10, 5)
-            memory = st.selectbox("Memory", ["Poor", "Medium", "Excellent"])
-        with col2:
-            reading_writing = st.selectbox("Reading & Writing", ["Poor", "Medium", "Excellent"])
-            teamwork = st.selectbox("Team Player?", ["No", "Yes"])
-        with col3:
-            self_learning = st.selectbox("Self-Learning?", ["No", "Yes"])
-            extra_courses = st.selectbox("Extra Courses?", ["No", "Yes"])
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.markdown("<div class='section-header'>Additional Achievements</div>", unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
-        with col1:
-            long_hours = st.selectbox("Can Work Long Hours?", ["No", "Yes"])
-            talent_tests = st.selectbox("Taken Talent Tests?", ["No", "Yes"])
-            olympiads = st.selectbox("Participated in Olympiads?", ["No", "Yes"])
-        with col2:
-            workshops = st.multiselect("Workshops Attended", 
-                ["ML", "AI", "Data Science", "Cloud", "Cybersecurity", "Blockchain", "IoT", "AR/VR"])
-            certifications = st.multiselect("Certifications", 
-                ["AWS", "Azure", "Google Cloud", "Python", "Java", "Networking", "Cybersecurity", "Data Analytics"])
-        
-        if logical > 0 or coding > 0 or public_speaking > 0:
-            st.session_state.skills_filled = True
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    with tab3:
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.markdown("<div class='section-header'>Career Preferences</div>", unsafe_allow_html=True)
-        st.markdown("Help us understand your career goals")
-        col1, col2 = st.columns(2)
-        with col1:
-            mgt_or_tech = st.selectbox("Career Direction", ["Management", "Technical"], 
-                help="Do you prefer technical roles or management positions?")
-            salary_or_work = st.selectbox("Primary Motivation", ["Salary", "Work"], 
-                help="What drives you more - compensation or passion for work?")
-        with col2:
-            worker_type = st.selectbox("Working Style", ["Hard worker", "Smart worker"], 
-                help="How would you describe your work approach?")
-            introvert = st.selectbox("Personality Type", ["Extrovert", "Introvert"], 
-                help="Are you more introverted or extroverted?")
-        
-        if mgt_or_tech or salary_or_work:
-            st.session_state.preferences_filled = True
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # Prediction button
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    all_tabs_filled = st.session_state.profile_filled and st.session_state.skills_filled and st.session_state.preferences_filled
-    
-    if all_tabs_filled:
-        st.success("All sections completed. Ready to discover your career path.")
+    if not st.session_state.quiz_started:
+        if st.button("Start Assessment", use_container_width=True):
+            st.session_state.quiz_started = True
+            st.rerun()
     else:
-        st.warning("Please complete all three tabs above for accurate recommendations")
-    
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("Discover My Career Path", use_container_width=True, type="primary"):
-            with st.spinner("Analyzing your profile..."):
-                introvert_value = "Yes" if introvert == "Introvert" else "No"
-                
-                profile = {
-                    "tenth": tenth, "twelfth": twelfth, "ug": ug, 
-                    "logical": logical, "coding": coding,
-                    "hackathons": hackathons, "public_speaking": public_speaking, 
-                    "memory": memory, "reading_writing": reading_writing, 
-                    "self_learning": self_learning, "teamwork": teamwork,
-                    "extra_courses": extra_courses, "long_hours": long_hours, 
-                    "talent_tests": talent_tests, "olympiads": olympiads, 
-                    "hours_per_day": hours_per_day, "mgt_or_tech": mgt_or_tech,
-                    "salary_or_work": salary_or_work, "worker_type": worker_type, 
-                    "introvert": introvert_value, "workshops": workshops, 
-                    "certifications": certifications
-                }
-                
-                recommendations = engine.recommend_careers(profile, top_n=5)
-                st.session_state.prediction_made = True
-                st.session_state.recommended_careers = recommendations
-                st.session_state.user_profile = profile
-                st.balloons()
+        # Quiz questions with indirect assessment
+        quiz_questions = [
+            # Logical Reasoning (Q1-Q5)
+            {
+                "q": "If all roses are flowers and all flowers fade, which statement is true?",
+                "options": ["All roses fade", "Some roses don't fade", "Flowers are roses", "Can't determine"],
+                "indirect": "logical",
+                "correct": 0
+            },
+            {
+                "q": "A clock shows 3:15. What's the angle between hour and minute hands?",
+                "options": ["7.5°", "15°", "30°", "45°"],
+                "indirect": "logical",
+                "correct": 0
+            },
+            {
+                "q": "If you rearrange 'ANMIETD', you get a word that means?",
+                "options": ["A place", "A feeling", "A profession", "An object"],
+                "indirect": "logical",
+                "correct": 2
+            },
+            {
+                "q": "What comes next: 2, 6, 12, 20, 30, ?",
+                "options": ["40", "42", "44", "45"],
+                "indirect": "logical",
+                "correct": 1
+            },
+            {
+                "q": "Which one doesn't belong: Tiger, Lion, Leopard, Cheetah, Deer?",
+                "options": ["Tiger", "Lion", "Cheetah", "Deer"],
+                "indirect": "logical",
+                "correct": 3
+            },
+            # Reading & Writing (Q6-Q9)
+            {
+                "q": "Choose the correct sentence:",
+                "options": [
+                    "He don't know nothing about it",
+                    "He doesn't know anything about it",
+                    "He don't know anything about it",
+                    "He doesn't know nothing about it"
+                ],
+                "indirect": "reading_writing",
+                "correct": 1
+            },
+            {
+                "q": "Which word is closest in meaning to 'Meticulous'?",
+                "options": ["Careless", "Thorough", "Quick", "Lazy"],
+                "indirect": "reading_writing",
+                "correct": 1
+            },
+            {
+                "q": "Identify the error: 'The manager have decided to implement the new policy next month.'",
+                "options": ["manager", "have", "implement", "No error"],
+                "indirect": "reading_writing",
+                "correct": 1
+            },
+            {
+                "q": "The government's new initiative aims to promote renewable energy adoption. Solar panels are being subsidized, wind farms expanded, and citizens are incentivized to reduce carbon footprint. What is the main idea?",
+                "options": ["Renewable energy costs too much", "Government is promoting clean energy adoption", "Solar panels are the only solution", "Citizens must buy solar panels"],
+                "indirect": "reading_writing",
+                "correct": 1
+            },
+            # Personality & Motivation (Q10-Q15)
+            {
+                "q": "After an 8-hour work day, you usually feel:",
+                "options": ["Energized to socialize", "Tired and need alone time", "Ready for more interaction", "Exhausted but motivated"],
+                "indirect": "introvert",
+                "correct": 1
+            },
+            {
+                "q": "When facing a difficult problem, your first instinct is to:",
+                "options": ["Call a friend to discuss", "Analyze it step by step alone", "Seek expert advice immediately", "Brainstorm with others"],
+                "indirect": "logical",
+                "correct": 1
+            },
+            {
+                "q": "A project deadline is tight. You would:",
+                "options": ["Work just enough to pass", "Put in extra effort to excel", "Work steadily without rushing", "Delegate to team members"],
+                "indirect": "mgt_or_tech",
+                "correct": 1
+            },
+            {
+                "q": "In a group presentation, you'd prefer to:",
+                "options": ["Lead the entire presentation", "Support from the background", "Handle technical aspects", "Coordinate between team members"],
+                "indirect": "public_speaking",
+                "correct": 0
+            },
+            {
+                "q": "Your ideal job emphasizes:",
+                "options": ["High salary package", "Meaningful work", "Flexible hours", "Leadership opportunities"],
+                "indirect": "salary_or_work",
+                "correct": 1
+            },
+            {
+                "q": "You solve problems more effectively by:",
+                "options": ["Following established procedures", "Finding creative shortcuts", "Asking for guidance", "Trial and error"],
+                "indirect": "worker_type",
+                "correct": 1
+            },
+            # Academic Performance Indicators (Q16-Q23)
+            {
+                "q": "Your 10th standard academic performance was:",
+                "options": ["Excellent (85%+)", "Very Good (75-84%)", "Good (65-74%)", "Average (below 65%)"],
+                "indirect": "tenth",
+                "correct": 0
+            },
+            {
+                "q": "Your 12th standard academic performance was:",
+                "options": ["Excellent (85%+)", "Very Good (75-84%)", "Good (65-74%)", "Average (below 65%)"],
+                "indirect": "twelfth",
+                "correct": 0
+            },
+            {
+                "q": "Your current/expected undergraduate percentage is:",
+                "options": ["Excellent (85%+)", "Very Good (75-84%)", "Good (65-74%)", "Average (below 65%)"],
+                "indirect": "ug",
+                "correct": 0
+            },
+            {
+                "q": "How do you typically study?",
+                "options": ["Last-minute cramming", "Regular daily study", "Irregular but focused", "Only for exams"],
+                "indirect": "hours_per_day",
+                "correct": 1
+            },
+            {
+                "q": "Your approach to learning new concepts is:",
+                "options": ["Wait for classroom teaching", "Self-study from multiple sources", "Ask peers and mentors", "Video tutorials only"],
+                "indirect": "self_learning",
+                "correct": 1
+            },
+            {
+                "q": "Have you pursued additional learning beyond curriculum?",
+                "options": ["Yes, multiple times", "Yes, occasionally", "Rarely", "Never"],
+                "indirect": "extra_courses",
+                "correct": 0
+            },
+            {
+                "q": "During group projects, you:",
+                "options": ["Do all the work yourself", "Contribute equally with team", "Let others lead", "Prefer working alone"],
+                "indirect": "teamwork",
+                "correct": 1
+            },
+            # Coding & Technical (Q21-Q24)
+            {
+                "q": "When writing code, your priority is:",
+                "options": ["Getting output quickly", "Clean, maintainable code", "Minimal lines of code", "Following trends"],
+                "indirect": "coding",
+                "correct": 1
+            },
+            {
+                "q": "You've participated in competitive programming or hackathons:",
+                "options": ["Multiple times", "A few times", "Once or twice", "Never"],
+                "indirect": "hackathons",
+                "correct": 0
+            },
+            {
+                "q": "Your debugging approach is usually:",
+                "options": ["Random trial and error", "Systematic analysis", "Copy solutions online", "Ask for help immediately"],
+                "indirect": "coding",
+                "correct": 1
+            },
+            {
+                "q": "Technical topics interest you because:",
+                "options": ["Easy to earn money", "Genuine curiosity", "Required for job", "Friends are doing it"],
+                "indirect": "mgt_or_tech",
+                "correct": 1
+            },
+            # Achievements & Certifications (Q25-Q28)
+            {
+                "q": "You've participated in competitions like Olympiads or talent tests:",
+                "options": ["Multiple times", "A few times", "Once", "Never"],
+                "indirect": "olympiads",
+                "correct": 0
+            },
+            {
+                "q": "Professional certifications or online courses completed:",
+                "options": ["3 or more", "1-2", "None yet", "Planning to start"],
+                "indirect": "certifications",
+                "correct": 0
+            },
+            {
+                "q": "Can you work extended hours when needed?",
+                "options": ["Yes, regularly", "Yes, occasionally", "Rarely", "No"],
+                "indirect": "long_hours",
+                "correct": 0
+            },
+            {
+                "q": "Your memory for facts and figures is:",
+                "options": ["Excellent recall", "Good generally", "Average", "Struggle to remember"],
+                "indirect": "memory",
+                "correct": 0
+            }
+        ]
+
+        # Display progress
+        progress = st.session_state.current_question / len(quiz_questions)
+        st.progress(progress)
+        st.markdown(f"**Question {st.session_state.current_question + 1}/{len(quiz_questions)}**")
+
+        q_data = quiz_questions[st.session_state.current_question]
+        st.markdown(f"### {q_data['q']}")
+        
+        answer = st.radio("", q_data['options'], label_visibility="collapsed", key=f"q_{st.session_state.current_question}")
+        
+        col1, col2, col3 = st.columns([1, 1, 1])
+        
+        with col1:
+            if st.session_state.current_question > 0:
+                if st.button("← Previous"):
+                    st.session_state.current_question -= 1
+                    st.rerun()
+        
+        with col3:
+            if st.session_state.current_question < len(quiz_questions) - 1:
+                if st.button("Next →"):
+                    st.session_state.quiz_responses[st.session_state.current_question] = q_data['options'].index(answer)
+                    st.session_state.current_question += 1
+                    st.rerun()
+            else:
+                if st.button("Submit Assessment"):
+                    st.session_state.quiz_responses[st.session_state.current_question] = q_data['options'].index(answer)
+                    
+                    # Calculate scores from responses
+                    scoring_map = {
+                        'tenth': [], 'twelfth': [], 'ug': [],
+                        'logical': [], 'coding': [], 'hackathons': [],
+                        'hours_per_day': [], 'public_speaking': [],
+                        'memory': [], 'reading_writing': [], 'teamwork': [],
+                        'self_learning': [], 'extra_courses': [],
+                        'long_hours': [], 'talent_tests': [],
+                        'olympiads': [], 'workshops': [], 'certifications': [],
+                        'mgt_or_tech': [], 'salary_or_work': [],
+                        'worker_type': [], 'introvert': []
+                    }
+                    
+                    for q_idx, response_idx in st.session_state.quiz_responses.items():
+                        q_data = quiz_questions[q_idx]
+                        score = 1 if response_idx == q_data['correct'] else 0
+                        scoring_map[q_data['indirect']].append(score)
+                    
+                    # Aggregate and convert to original format
+                    tenth = min(100, int((sum(scoring_map['tenth']) / max(len(scoring_map['tenth']), 1)) * 95 + 5))
+                    twelfth = min(100, int((sum(scoring_map['twelfth']) / max(len(scoring_map['twelfth']), 1)) * 95 + 5))
+                    ug = min(100, int((sum(scoring_map['ug']) / max(len(scoring_map['ug']), 1)) * 95 + 5))
+                    
+                    logical = int((sum(scoring_map['logical']) / max(len(scoring_map['logical']), 1)) * 10)
+                    coding = int((sum(scoring_map['coding']) / max(len(scoring_map['coding']), 1)) * 10)
+                    public_speaking = int((sum(scoring_map['public_speaking']) / max(len(scoring_map['public_speaking']), 1)) * 10)
+                    
+                    hackathons = "Yes" if sum(scoring_map['hackathons']) > 0 else "No"
+                    long_hours = "Yes" if sum(scoring_map['long_hours']) > 0 else "No"
+                    olympiads = "Yes" if sum(scoring_map['olympiads']) > 0 else "No"
+                    self_learning = "Yes" if sum(scoring_map['self_learning']) > 0 else "No"
+                    extra_courses = "Yes" if sum(scoring_map['extra_courses']) > 0 else "No"
+                    teamwork = "Yes" if sum(scoring_map['teamwork']) > 0 else "No"
+                    talent_tests = "No"  # Not directly assessed in quiz
+                    
+                    memory = ["Poor", "Medium", "Excellent"][min(2, int(sum(scoring_map['memory']) / max(len(scoring_map['memory']), 1) * 2))]
+                    reading_writing = ["Poor", "Medium", "Excellent"][min(2, int(sum(scoring_map['reading_writing']) / max(len(scoring_map['reading_writing']), 1) * 2))]
+                    
+                    mgt_or_tech = "Technical" if sum(scoring_map['mgt_or_tech']) > len(scoring_map['mgt_or_tech']) / 2 else "Management"
+                    salary_or_work = "Work" if sum(scoring_map['salary_or_work']) > len(scoring_map['salary_or_work']) / 2 else "Salary"
+                    worker_type = "Smart worker" if sum(scoring_map['worker_type']) > len(scoring_map['worker_type']) / 2 else "Hard worker"
+                    introvert = "Yes" if sum(scoring_map['introvert']) > len(scoring_map['introvert']) / 2 else "No"
+                    
+                    hours_per_day = 8 + int((sum(scoring_map['hours_per_day']) / max(len(scoring_map['hours_per_day']), 1)) * 4)
+                    
+                    # Set session state for all fields
+                    st.session_state.tenth = tenth
+                    st.session_state.twelfth = twelfth
+                    st.session_state.ug = ug
+                    st.session_state.logical = logical
+                    st.session_state.coding = coding
+                    st.session_state.hackathons = hackathons
+                    st.session_state.public_speaking = public_speaking
+                    st.session_state.memory = memory
+                    st.session_state.reading_writing = reading_writing
+                    st.session_state.teamwork = teamwork
+                    st.session_state.self_learning = self_learning
+                    st.session_state.extra_courses = extra_courses
+                    st.session_state.long_hours = long_hours
+                    st.session_state.talent_tests = talent_tests
+                    st.session_state.olympiads = olympiads
+                    st.session_state.hours_per_day = hours_per_day
+                    st.session_state.mgt_or_tech = mgt_or_tech
+                    st.session_state.salary_or_work = salary_or_work
+                    st.session_state.worker_type = worker_type
+                    st.session_state.introvert_value = introvert
+                    st.session_state.workshops = []  # Not directly assessed
+                    st.session_state.certifications = []  # Not directly assessed
+                    
+                    st.session_state.profile_filled = True
+                    st.session_state.skills_filled = True
+                    st.session_state.preferences_filled = True
+                    st.session_state.quiz_started = False
+                    
+                    st.success("Assessment Complete! Your profile has been generated.")
+                    st.balloons()
+                    st.rerun()
+
+    # Prediction button - shown after quiz completion
+    if st.session_state.profile_filled and st.session_state.skills_filled and st.session_state.preferences_filled:
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.success("All sections completed. Ready to discover your career path.")
+        
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            if st.button("Discover My Career Path", use_container_width=True, type="primary"):
+                with st.spinner("Analyzing your profile..."):
+                    profile = {
+                        "tenth": st.session_state.tenth,
+                        "twelfth": st.session_state.twelfth,
+                        "ug": st.session_state.ug,
+                        "logical": st.session_state.logical,
+                        "coding": st.session_state.coding,
+                        "hackathons": st.session_state.hackathons,
+                        "public_speaking": st.session_state.public_speaking,
+                        "memory": st.session_state.memory,
+                        "reading_writing": st.session_state.reading_writing,
+                        "self_learning": st.session_state.self_learning,
+                        "teamwork": st.session_state.teamwork,
+                        "extra_courses": st.session_state.extra_courses,
+                        "long_hours": st.session_state.long_hours,
+                        "talent_tests": st.session_state.talent_tests,
+                        "olympiads": st.session_state.olympiads,
+                        "hours_per_day": st.session_state.hours_per_day,
+                        "mgt_or_tech": st.session_state.mgt_or_tech,
+                        "salary_or_work": st.session_state.salary_or_work,
+                        "worker_type": st.session_state.worker_type,
+                        "introvert": st.session_state.introvert_value,
+                        "workshops": st.session_state.workshops,
+                        "certifications": st.session_state.certifications
+                    }
+                    
+                    recommendations = engine.recommend_careers(profile, top_n=5)
+                    st.session_state.prediction_made = True
+                    st.session_state.recommended_careers = recommendations
+                    st.session_state.user_profile = profile
+                    st.balloons()
 
     # Display results
     if st.session_state.prediction_made:
@@ -950,16 +1184,16 @@ else:  # AI Career Guide tab
     # ==============================
     # Premade Questions
     # ==============================
-    PREMADE_QUESTIONS = [
-        "What skills should I focus on for my top career recommendation?",
-        "How can I improve my profile to be more competitive?",
-        "What certifications would you recommend for my career path?",
-        "Should I pursue higher education or gain work experience first?",
-        "What are the typical salary ranges for my recommended careers?",
-        "How can I transition from my current field to my recommended career?",
-        "What networking strategies should I follow?",
-        "What are the emerging trends in my recommended field?"
-    ]
+    # PREMADE_QUESTIONS = [
+    #     "What skills should I focus on for my top career recommendation?",
+    #     "How can I improve my profile to be more competitive?",
+    #     "What certifications would you recommend for my career path?",
+    #     "Should I pursue higher education or gain work experience first?",
+    #     "What are the typical salary ranges for my recommended careers?",
+    #     "How can I transition from my current field to my recommended career?",
+    #     "What networking strategies should I follow?",
+    #     "What are the emerging trends in my recommended field?"
+    # ]
 
     # ==============================
     # TinyLlama Response
@@ -1075,7 +1309,7 @@ else:  # AI Career Guide tab
         return get_fallback_response(user_question, profile, careers), "Fallback Assistant"
 
     # ==============================
-    # UI Helper
+    # Chat Rendering
     # ==============================
     def render_chat_message(message):
         if message["role"] == "user":
@@ -1094,6 +1328,30 @@ else:  # AI Career Guide tab
             """, unsafe_allow_html=True)
 
     # ==============================
+    # Save Chat to PDF
+    # ==============================
+    def save_chat_to_pdf(chat_history):
+        buffer = io.BytesIO()
+        pdf = canvas.Canvas(buffer, pagesize=letter)
+        width, height = letter
+        y = height - 50
+        pdf.setFont("Helvetica", 11)
+
+        for msg in chat_history:
+            role = "You" if msg["role"] == "user" else "Career Advisor"
+            text = f"{role}: {msg['content']}"
+            for line in text.split("\n"):
+                pdf.drawString(50, y, line)
+                y -= 15
+                if y < 50:
+                    pdf.showPage()
+                    pdf.setFont("Helvetica", 11)
+                    y = height - 50
+        pdf.save()
+        buffer.seek(0)
+        return buffer
+
+    # ==============================
     # Streamlit UI
     # ==============================
     st.title("💼 AI Career Counselor")
@@ -1101,65 +1359,87 @@ else:  # AI Career Guide tab
     status_col1, status_col2 = st.columns([3, 1])
     with status_col2:
         if TINYLLAMA_AVAILABLE:
-            st.success("TinyLlama Ready ")
+            st.success("TinyLlama Ready")
         else:
-            st.warning("TinyLlama Unavailable ")
+            st.warning("TinyLlama Unavailable")
 
-    # Quick Questions
-    st.markdown("### Quick Questions")
-    cols = st.columns(4)
-    for idx, question in enumerate(PREMADE_QUESTIONS):
-        col_idx = idx % 4
-        with cols[col_idx]:
-            if st.button(question[:25] + "...", key=f"premade_{idx}", use_container_width=True):
-                st.session_state["user_input_area"] = question
-
-    st.markdown("---")
-
-    # Chat history
-    st.markdown("### Conversation")
+    # Init states
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
-
     if "user_input_area" not in st.session_state:
         st.session_state.user_input_area = ""
 
+    # ==============================
+    # Quick Questions
+    # ==============================
+    # st.markdown("### Quick Questions")
+    # cols = st.columns(4)
+    # for idx, question in enumerate(PREMADE_QUESTIONS):
+    #     col_idx = idx % 4
+    #     with cols[col_idx]:
+    #         if st.button(question[:25] + "...", key=f"premade_{idx}", use_container_width=True):
+    #             st.session_state.user_input_area = question
+
+    # st.markdown("---")
+
+    # ==============================
+    # Conversation
+    # ==============================
+    st.markdown("### Conversation")
     if st.session_state.chat_history:
         for message in st.session_state.chat_history:
             render_chat_message(message)
     else:
         st.info("Start a conversation by asking a question or clicking a quick question above 👆")
 
-    # Chat input
+    # ==============================
+    # Chat Input
+    # ==============================
     user_question = st.text_area(
         "Your Question",
         value=st.session_state.user_input_area,
         height=100,
         placeholder="Ask anything about your career...",
-        key="user_input_area"
+        key="user_input_box"
     )
 
+    # ==============================
     # Buttons
-    col1, col2 = st.columns([3, 1])
+    # ==============================
+    col1, col2, col3 = st.columns([2, 1, 1])
     with col1:
-        if st.button("Send", type="primary"):
-            if user_question.strip():
-                st.session_state.chat_history.append({"role": "user", "content": user_question})
-                with st.spinner("Thinking..."):
-                    response, source = get_ai_response(
-                        user_question,
-                        st.session_state.user_profile,
-                        st.session_state.recommended_careers
-                    )
-                    st.session_state.chat_history.append(
-                        {"role": "assistant", "content": f"{response}\n\n*Source: {source}*"}
-                    )
-                st.session_state.user_input_area = ""
-                st.rerun()
-            else:
-                st.warning("Please enter a question first!")
-
+        send = st.button("Send", type="primary", use_container_width=True)
     with col2:
-        if st.button("Clear Chat "):
-            st.session_state.chat_history = []
-            st.session_state.user_input_area = ""
+        clear = st.button("Clear Chat", use_container_width=True)
+    with col3:
+        save_pdf = st.button("Save Chat to PDF", use_container_width=True)
+
+    # ==============================
+    # Button Actions
+    # ==============================
+    if send and user_question.strip():
+        st.session_state.chat_history.append({"role": "user", "content": user_question})
+        with st.spinner("Thinking..."):
+            response, source = get_ai_response(
+                user_question,
+                st.session_state.user_profile,
+                st.session_state.recommended_careers
+            )
+            st.session_state.chat_history.append(
+                {"role": "assistant", "content": f"{response}\n\n*Source: {source}*"}
+            )
+        st.session_state.user_input_area = ""
+
+    if clear:
+        st.session_state.chat_history = []
+        st.session_state.user_input_area = ""
+
+    if save_pdf and st.session_state.chat_history:
+        pdf_buffer = save_chat_to_pdf(st.session_state.chat_history)
+        st.download_button(
+            label="📄 Download Chat PDF",
+            data=pdf_buffer,
+            file_name="career_chat.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
