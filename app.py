@@ -861,7 +861,6 @@ elif selected == "Quiz":
             # Save all user info + results to CSV
             user_info = st.session_state.get("user_info", {})
             save_user_to_csv(user_info, scores, predicted_career)
-            st.success("📁 Your data has been securely saved to 'user_results.csv'")
 
             if predicted_career == 0:
                 career_path = "AI ML Specialist"
@@ -1818,8 +1817,8 @@ elif selected == "Chatbot":
             Be concise, motivating, and friendly.
             """
             # Get your API keys from secrets.toml
-            api_key_1 = st.secrets["general"]["OPENROUTER_API_KEY"]
-            api_key_2 = st.secrets["general"]["OPENROUTER_API_KEY_2"]
+            api_key_1 = st.secrets["OPENROUTER_API_KEY"]
+            api_key_2 = st.secrets["OPENROUTER_API_KEY_2"]
 
             # Choose which one to use (primary)
             api_key = api_key_1  # or swap with api_key_2 if needed
