@@ -1,0 +1,34 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.env/
+.env
+
+# Streamlit secrets (⚠️ never upload this)
+.streamlit/secrets.toml
+
+# IDE files
+.vscode/
+.idea/
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Cache / model files
+*.joblib
+*.h5
+
+# Optional: local CSVs or user data
+quiz_data/
+csv_files/
+user_data.csv
