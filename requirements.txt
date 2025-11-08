@@ -1,29 +1,14 @@
-# ===== PathPilot - Streamlit Career Predictor =====
+streamlit
+pandas
+numpy
+joblib
+requests
+scikit-learn
+fpdf2
+streamlit-option-menu
+streamlit-lottie
+python-dateutil
+openpyxl
+protobuf
 
-# Core Dependencies
-streamlit==1.38.0
-pandas==2.2.2
-numpy==1.26.4
-joblib==1.4.2
-requests==2.32.3
 
-# Machine Learning
-scikit-learn==1.5.1
-
-# PDF Generation
-fpdf2==2.7.8
-
-# UI and Components
-streamlit-option-menu==0.3.12
-streamlit-lottie==0.0.5
-
-# Data Handling / Utility
-python-dateutil==2.9.0.post0
-
-# CSV / Excel compatibility
-openpyxl==3.1.5
-
-# Prevent Streamlit protobuf conflicts
-protobuf==5.27.2
-
-# ===== End of requirements.txt =====
