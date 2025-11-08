@@ -1,0 +1,51 @@
+question,option1,option2,option3,answer
+What does OOP stand for?,Object-Oriented Programming,Object Order Processing,Operational Object Program,Object-Oriented Programming
+Which of these is NOT a programming language?,Python,HTML,Java,HTML
+Which keyword is used to define a function in Python?,func,def,function,def
+Which of these is a compiled language?,C,Python,JavaScript,C
+Which of these is used for web development?,HTML,Excel,Photoshop,HTML
+Which symbol is used for comments in Python?,#,//,<!--,# 
+Which data type is immutable in Python?,List,String,Dictionary,String
+Which language runs in a browser?,JavaScript,C,Python,JavaScript
+Which keyword creates a class in Java?,object,class,def,class
+Which file extension is used for Python files?,.py,.java,.exe,.py
+Which loop executes at least once?,do-while,while,for,do-while
+Which keyword is used to exit a loop?,break,stop,exit,break
+What is the main function of a compiler?,Translate source code,Store data,Execute code,Translate source code
+Which operator is used for equality comparison?,==,=,===,==
+Which of these is not a valid variable name?,2var,var_name,_name,2var
+Which keyword declares a constant in JavaScript?,const,constant,var,const
+Which method is used to get input in Python?,input(),scan(),read(),input()
+Which keyword handles exceptions in Python?,try,catch,finally,try
+Which keyword defines inheritance in Python?,extends,super,class,class
+Which of these is an interpreted language?,Python,C++,C,Python
+Which library is used for data analysis in Python?,NumPy,Pandas,TensorFlow,Pandas
+Which keyword defines a package in Java?,package,import,namespace,package
+Which data structure works as FIFO?,Stack,Queue,Heap,Queue
+Which one is not an OOP concept?,Encapsulation,Inheritance,Compilation,Compilation
+Which of these languages uses pointers?,Python,Java,C,C
+Which of these is not a control structure?,If-Else,Loop,Variable,Variable
+Which Python keyword defines a function?,func,def,function,def
+Which keyword is used to inherit a class in Java?,extends,super,implements,extends
+Which language uses indentation as syntax?,Python,Java,C,Python
+What does API stand for?,Application Programming Interface,Advanced Program Interaction,Algorithm Process Input,Application Programming Interface
+Which operator joins strings in Python?,+,&,%,+
+Which library is used for machine learning in Python?,TensorFlow,Pandas,Requests,TensorFlow
+Which of the following is dynamically typed?,Python,C++,C,Python
+What does IDE stand for?,Integrated Development Environment,Internal Data Engine,Input Design Editor,Integrated Development Environment
+Which keyword is used for polymorphism in Java?,override,overload,extends,override
+What is a constructor?,Method called at object creation,Destructor,Loop statement,Method called at object creation
+Which of these supports garbage collection?,Java,C,Assembly,Java
+Which function finds length of a list?,len(),count(),size(),len()
+Which keyword creates an object in Java?,new,create,object,new
+Which file type is generated after compiling Java code?,.class,.java,.exe,.class
+Which operator is used for logical AND?,&&,||,!,&&
+Which keyword defines an abstract class?,abstract,virtual,class,abstract
+Which of these is a scripting language?,Python,C,Java,Python
+Which Python function sorts a list?,sorted(),arrange(),sortList(),sorted()
+Which keyword is used for loops in Python?,loop,for,iterate,for
+Which of these languages is strongly typed?,Java,JavaScript,Python,Java
+Which of these is not an IDE?,VS Code,PyCharm,MS Word,MS Word
+Which function prints output in Python?,display(),echo(),print(),print()
+Which keyword handles multiple conditions?,elif,elseif,if,elif
+What is indentation used for in Python?,Block structure,Alignment,Decoration,Block structure

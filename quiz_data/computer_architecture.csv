@@ -1,0 +1,52 @@
+question,option1,option2,option3,answer
+Which unit performs arithmetic and logic operations?,ALU,CU,Memory Unit,ALU
+What does CPU stand for?,Central Processing Unit,Central Performance Unit,Control Processing Unit,Central Processing Unit
+Which part of CPU coordinates all operations?,Control Unit,ALU,Registers,Control Unit
+Which memory is the fastest?,Cache,RAM,Hard Disk,Cache
+Which register stores the address of next instruction?,Program Counter,Accumulator,Instruction Register,Program Counter
+Which type of memory is volatile?,RAM,ROM,Flash,RAM
+Which of the following is non-volatile memory?,ROM,RAM,Cache,ROM
+Which memory is also called main memory?,RAM,Cache,Registers,RAM
+Which memory is used to store BIOS?,ROM,RAM,EEPROM,ROM
+Which component is called the brain of the computer?,CPU,GPU,ROM,CPU
+What is the function of MAR?,Holds memory address,Holds data,Holds instruction,Holds memory address
+What does MDR stand for?,Memory Data Register,Main Data Register,Memory Direction Register,Memory Data Register
+Which of the following stores the results of arithmetic operations?,Accumulator,Program Counter,Instruction Register,Accumulator
+What does instruction register hold?,Current instruction,Next instruction,Last instruction,Current instruction
+Which bus carries data between CPU and memory?,Data bus,Address bus,Control bus,Data bus
+Which bus carries the address of memory location?,Address bus,Data bus,Control bus,Address bus
+Which bus carries signals like read/write?,Control bus,Data bus,Address bus,Control bus
+Which device converts assembly code into machine code?,Assembler,Compiler,Interpreter,Assembler
+What is a microprocessor?,CPU on a chip,Memory chip,Storage device,CPU on a chip
+What is clock speed measured in?,GHz,MBps,Volts,GHz
+What increases CPU performance?,Pipelining,Fragmentation,Swapping,Pipelining
+Which architecture separates instructions and data?,Harvard architecture,Von Neumann architecture,RISC,Harvard architecture
+Which architecture uses same memory for instructions and data?,Von Neumann,Harvard,RISC,Von Neumann
+RISC stands for?,Reduced Instruction Set Computer,Random Instruction Storage Chip,Real Integrated System Circuit,Reduced Instruction Set Computer
+CISC stands for?,Complex Instruction Set Computer,Central Instruction System Circuit,Control Integrated System Chip,Complex Instruction Set Computer
+Which of these is a characteristic of RISC?,Simple instructions,Complex instructions,Variable instruction length,Simple instructions
+Which of these is a characteristic of CISC?,Complex instructions,Simple instructions,Short pipeline,Complex instructions
+Which of these improves CPU throughput?,Pipelining,Virtual memory,Buffering,Pipelining
+What does cache memory improve?,Speed,Storage capacity,Graphics quality,Speed
+What is locality of reference?,Repeated access to nearby memory locations,Random access,Remote access,Repeated access to nearby memory locations
+Which cache is closest to the CPU?,L1,L2,L3,L1
+Which cache has the largest capacity?,L3,L1,L2,L3
+What is hit ratio?,Cache hits / total accesses,Cache misses / total accesses,Total accesses / cache hits,Cache hits / total accesses
+What is cache miss?,Data not found in cache,Data found in cache,Data corrupted,Data not found in cache
+What does DMA stand for?,Direct Memory Access,Data Memory Allocation,Dynamic Memory Architecture,Direct Memory Access
+What is the main advantage of DMA?,CPU not involved in data transfer,Faster arithmetic,Increased memory size,CPU not involved in data transfer
+What is an interrupt?,Signal to CPU to handle an event,Error in code,Memory overflow,Signal to CPU to handle an event
+Which interrupt cannot be disabled?,Non-maskable interrupt,Maskable interrupt,Software interrupt,Non-maskable interrupt
+What is instruction pipelining?,Overlapping execution of instructions,Sequential execution,Random execution,Overlapping execution of instructions
+Which register holds the currently executing instruction?,Instruction Register,Program Counter,Accumulator,Instruction Register
+What is an opcode?,Part of instruction specifying operation,Address of data,Memory location,Part of instruction specifying operation
+What does microprogramming control?,CPU operations,Memory hierarchy,Disk scheduling,CPU operations
+Which unit decodes instructions?,Control Unit,ALU,Registers,Control Unit
+Which device translates high-level code into machine code?,Compiler,Assembler,Linker,Compiler
+Which operation does ALU perform?,Arithmetic and logic,Memory control,Instruction decoding,Arithmetic and logic
+Which part stores data temporarily during processing?,Registers,Hard disk,Cache,Registers
+Which of these is a secondary storage?,Hard Disk,RAM,Registers,Hard Disk
+What is the function of the system clock?,Synchronize CPU operations,Store instructions,Provide power,Synchronize CPU operations
+Which technique allows multiple instructions per cycle?,Superscalar execution,Paging,Fragmentation,Superscalar execution
+Which organization uses a single instruction on multiple data?,SIMD,MIMD,SISD,SIMD
+What does pipeline hazard cause?,Delay in instruction execution,Increase in speed,Parallelism,Delay in instruction execution

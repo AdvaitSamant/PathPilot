@@ -29,6 +29,5 @@ Thumbs.db
 *.h5
 
 # Optional: local CSVs or user data
-quiz_data/
-csv_files/
+
 user_data.csv

@@ -1,0 +1,50 @@
+question,option1,option2,option3,answer
+Which methodology uses sprints?,Waterfall,Agile,V-Model,Agile
+What does a Gantt chart represent?,Project budget,Project timeline,Project risks,Project timeline
+Who ensures the project meets business goals?,Project Manager,Developer,Designer,Project Manager
+Which phase involves defining project goals?,Initiation,Execution,Closure,Initiation
+What does PERT stand for?,Program Evaluation and Review Technique,Project Execution Review Technique,Program Event Reporting Tool,Program Evaluation and Review Technique
+Which process monitors project progress?,Controlling,Initiation,Closing,Controlling
+Which tool is used to visualize task dependencies?,Gantt Chart,PERT Chart,Bar Graph,PERT Chart
+Which of these is not a project constraint?,Scope,Time,Motivation,Motivation
+What is a milestone?,Significant event in a project,Team meeting,Code review,Significant event in a project
+Which model completes one phase before the next?,Waterfall,Agile,Spiral,Waterfall
+Who approves project deliverables?,Client,Tester,Developer,Client
+Which document defines project scope?,Project Charter,Code Document,Meeting Notes,Project Charter
+What is scope creep?,Uncontrolled scope expansion,Team reduction,Schedule compression,Uncontrolled scope expansion
+Which of the following is part of Agile?,Scrum,Waterfall,PDM,Scrum
+Who facilitates daily stand-up meetings?,Scrum Master,Project Sponsor,Product Owner,Scrum Master
+Which artifact shows what needs to be built?,Product Backlog,Sprint Goal,Codebase,Product Backlog
+Which Agile event reviews completed work?,Sprint Review,Sprint Retrospective,Daily Standup,Sprint Review
+Who owns the product backlog?,Product Owner,Project Manager,Developer,Product Owner
+What is the triple constraint of project management?,Scope-Time-Cost,Scope-Quality-Team,Time-Budget-Goals,Scope-Time-Cost
+Which phase ensures lessons learned are documented?,Closure,Planning,Execution,Closure
+Which chart tracks progress over time in Agile?,Burndown Chart,Gantt Chart,Flowchart,Burndown Chart
+Which document outlines communication flow?,Communication Plan,Work Plan,Meeting Agenda,Communication Plan
+Who is responsible for risk management?,Project Manager,Stakeholder,Designer,Project Manager
+Which tool helps identify project risks?,Risk Register,PERT Chart,Flowchart,Risk Register
+Which diagram shows the sequence of activities?,Network Diagram,Bar Chart,Tree Diagram,Network Diagram
+What does WBS stand for?,Work Breakdown Structure,Workflow Build System,Work Benefit Schedule,Work Breakdown Structure
+Which process defines project deliverables?,Planning,Initiation,Closing,Planning
+Which of these is a project constraint?,Scope,Schedule,Resources,All of these
+Which technique estimates project time?,Critical Path Method,Flowcharting,Risk Mapping,Critical Path Method
+Who sponsors a project?,Senior management,Customer,Developer,Senior management
+What does ROI stand for?,Return on Investment,Rate of Implementation,Result of Integration,Return on Investment
+Which Agile role removes obstacles?,Scrum Master,Developer,Stakeholder,Scrum Master
+Which document defines project budget?,Cost Baseline,Project Charter,Task Sheet,Cost Baseline
+Which of these is an Agile framework?,Scrum,PMP,Waterfall,Scrum
+Which phase involves task allocation?,Execution,Planning,Closure,Execution
+Which phase validates deliverables?,Testing,Execution,Closure,Testing
+Which meeting reflects on process improvement?,Retrospective,Standup,Review,Retrospective
+Which chart shows overlapping tasks?,Gantt Chart,PERT Chart,Network Diagram,Gantt Chart
+Which role defines project vision?,Product Owner,Scrum Master,Tester,Product Owner
+Which methodology delivers working software faster?,Agile,Waterfall,V-Model,Agile
+Which metric measures team velocity?,Story Points,Budget,Timeline,Story Points
+Which of the following best describes a stakeholder?,Anyone affected by the project outcome,Developer only,Project Manager,Anyone affected by the project outcome
+Which process handles deviations?,Change Control,Scope Creep,Risk Planning,Change Control
+Which factor determines project success?,Meeting goals,Number of members,Deadline only,Meeting goals
+Which tool is commonly used in Agile projects?,JIRA,Excel,Word,JIRA
+Which process ensures deliverables meet expectations?,Quality Control,Team Review,Code Audit,Quality Control
+Which of these is a time management tool?,Gantt Chart,SWOT Analysis,RACI Chart,Gantt Chart
+Which document defines quality standards?,Quality Management Plan,Scope Document,Code Plan,Quality Management Plan
+What is a sprint retrospective for?,Improving future sprints,Review deliverables,Planning sprint backlog,Improving future sprints

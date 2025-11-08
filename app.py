@@ -705,7 +705,7 @@ elif selected == "Quiz":
             age = st.number_input("Age", min_value=10, max_value=100, step=1)
             email = st.text_input("Email Address", placeholder="name@example.com")
             goal = st.text_input("Career Goal", placeholder="e.g., Become a Data Scientist")
-            df = pd.read_csv("UGC Universities.csv")
+            df = pd.read_csv("csv_files/UGC Universities.csv")
             institutions = df["Name"].tolist()
 
             # Provide searchable dropdown
