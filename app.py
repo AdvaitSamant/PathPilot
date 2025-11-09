@@ -375,6 +375,7 @@ elif selected == "Quiz":
     Your answers will be automatically scored <b>(1–10)</b> based on accuracy!
     </p>
     """, unsafe_allow_html=True)
+    
     st.markdown("""
     <style>
     .divider {
@@ -1696,6 +1697,90 @@ elif selected == "Chatbot":
     from datetime import datetime
     import re
 
+    # === State Control ===
+    if "warning_acknowledged" not in st.session_state:
+        st.session_state.warning_acknowledged = False
+
+    # === Modal Overlay with Countdown ===
+    if not st.session_state.warning_acknowledged:
+        countdown_container = st.empty()
+
+        for remaining in range(10, 0, -1):
+            countdown_container.markdown(f"""
+            <style>
+            .warning-overlay {{
+                position: fixed;
+                inset: 0;
+                background: rgba(255, 255, 255, 0.96);
+                backdrop-filter: blur(3px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+                animation: fadeIn 0.4s ease-in-out;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            }}
+            .warning-box {{
+                background: #ffffff;
+                border-radius: 18px;
+                padding: 40px 45px 35px;
+                width: 460px;
+                text-align: center;
+                box-shadow: 0 8px 25px rgba(102,187,106,0.25);
+                border-top: 5px solid #66BB6A;
+                animation: slideUp 0.4s ease-out;
+            }}
+            .warning-title {{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
+                font-size: 20px;
+                font-weight: 800;
+                color: #E53935;
+                margin-bottom: 14px;
+            }}
+            .warning-title span {{ font-size: 24px; }}
+            .warning-text {{
+                font-size: 15px;
+                color: #444;
+                line-height: 1.65;
+                margin-bottom: 20px;
+            }}
+            .timer {{
+                font-size: 14px;
+                color: #66BB6A;
+                font-weight: 600;
+                letter-spacing: 0.3px;
+                margin-top: 8px;
+            }}
+            @keyframes fadeIn {{ from {{opacity:0;}} to {{opacity:1;}} }}
+            @keyframes slideUp {{ from {{transform:translateY(25px);opacity:0;}} to {{transform:translateY(0);opacity:1;}} }}
+            </style>
+
+            <div class="warning-overlay">
+                <div class="warning-box">
+                    <div class="warning-title"><span>⚠️</span> Important Notice</div>
+                    <p class="warning-text">
+                        This AI Career Mentor is designed to <b>guide students</b> by providing
+                        <b>career insights and options</b> based on your skills and goals.<br><br>
+                        However, before making <b>any major life decisions</b> or taking adverse steps,
+                        please consult a <b>qualified professional</b> or academic advisor.
+                    </p>
+                    <p class="timer">Auto-closing in {remaining} second{'s' if remaining != 1 else ''}...</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            t.sleep(1)
+
+        countdown_container.empty()
+        st.session_state.warning_acknowledged = True
+
+
+        st.toast("Notice acknowledged automatically. Let’s get you career-ready")
+        st.rerun()
+
+
     def safe_text(text):
         """Removes or replaces unsupported characters for compatibility."""
         try:
@@ -1761,9 +1846,9 @@ elif selected == "Chatbot":
     """, unsafe_allow_html=True)
 
     # ========== MAIN UI ==========
-    st.title("💬 AI Career Mentor")
-    st.info("Welcome to the AI Career Mentor! Ask me anything about career paths, skills, or job market trends.")
-
+    st.title("PathPilot Mentor")
+    st.info("Welcome to the PathPilot Mentor! Ask me anything about career paths, skills, or job market trends.")
+    st.toast("🚀 Welcome aboard! Your PathPilot Mentor is ready to assist you.", icon="🤖")
     # === QUIZ VALIDATION ===
     if "predicted_career" not in st.session_state or st.session_state.predicted_career is None:
         st.warning("⚠️ Please complete the quiz first!")
