@@ -233,8 +233,8 @@ if selected == "Home":
         st.markdown("""
             ### Welcome to **PathPilot – Your AI Career Mentor**
 
-            Unlock your future with intelligent, data-driven insights.  
-            PathPilot helps you **discover your ideal career path** using AI-powered analysis — designed just for you.
+            Discover where **your potential** can take you with **PathPilot**.
+            Using intelligent, data-driven analysis, we help you uncover the career path that fits you best.
 
             #### What you can do here:
             - Take a quick **Skill & Personality Quiz**
@@ -243,7 +243,7 @@ if selected == "Home":
             - Explore **Insights, Salaries, and Growth Opportunities**
 
             No endless forms. No generic advice.  
-            Just your skills, your potential — and **AI that actually gets you.**
+            Just your skills, your potential and **AI that actually gets you.**
             """)
 
     st.markdown("---")
@@ -345,15 +345,15 @@ if selected == "Home":
     # -------------------------
     st.info("""
     ### Getting Started with PathPilot
-    1️⃣ Head to the **Quiz** tab and complete the 3-question skill test in each section.  
-    2️⃣ Hit **Predict My Career** to see your AI-powered career suggestion.  
-    3️⃣ Jump into the **Chatbot** tab to explore advice, learning resources, and your personalized roadmap.  
+    1. Head to the **Quiz** tab and complete the 3-question skill test in each section.  
+    2. Hit **Predict My Career** to see your AI-powered career suggestion.  
+    3. Jump into the **Chatbot** tab to explore advice, learning resources, and your personalized roadmap.  
 
-    💡 **Pro Tip:** All your progress is saved automatically — no resets, no re-entry.
+    **Pro Tip:** All your progress is saved automatically — no resets, no re-entry.
     """)
 
     st.markdown("---")
-    st.caption("🌱 Made with ❤️ using Streamlit and OpenRouter AI • Powered by PathPilot")
+    st.caption("By **Students**, For **Students**, Driven By **PathPilot**.")
 
 
 elif selected == "Quiz":
